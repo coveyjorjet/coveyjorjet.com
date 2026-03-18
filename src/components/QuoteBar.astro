@@ -1,0 +1,53 @@
+---
+---
+
+<aside class="px-6 sm:px-10 lg:px-16 py-5 max-w-5xl mx-auto" x-data="qb()" x-init="init()">
+  <div
+    class="flex items-start gap-4 px-6 py-5 rounded-lg"
+    style="background:var(--bg-alt);border:1px solid var(--border);"
+  >
+    <span class="terminal-font text-2xl flex-shrink-0 leading-none select-none" style="color:var(--accent);opacity:0.5;">"</span>
+    <div class="flex-1 min-w-0">
+      <p class="terminal-font text-sm leading-relaxed italic" style="color:var(--text-em);" x-text="q.text"></p>
+      <p class="terminal-font text-xs mt-1.5" style="color:var(--text);opacity:0.45;">— <span x-text="q.author"></span></p>
+    </div>
+    <button
+      @click="next()"
+      class="terminal-font text-base flex-shrink-0"
+      style="color:var(--text);opacity:0.3;background:none;border:none;cursor:pointer;padding:2px 6px;line-height:1;"
+      @mouseenter="$el.style.opacity='0.75'" @mouseleave="$el.style.opacity='0.3'"
+      aria-label="Next quote"
+    >↻</button>
+  </div>
+</aside>
+
+<script is:inline>
+  (function() {
+    var QQ = [
+      {text:"Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",author:"Martin Fowler"},
+      {text:"Debugging is twice as hard as writing the code in the first place.",author:"Brian Kernighan"},
+      {text:"The art of programming is the art of organizing complexity.",author:"Edsger W. Dijkstra"},
+      {text:"Premature optimization is the root of all evil.",author:"Donald Knuth"},
+      {text:"Simple things should be simple, complex things should be possible.",author:"Alan Kay"},
+      {text:"Make it work, make it right, make it fast.",author:"Kent Beck"},
+      {text:"Complexity is the enemy of reliability.",author:"Werner Vogels"},
+      {text:"In the embedded world, every byte is sacred and every cycle is precious.",author:"Unknown"},
+      {text:"Hardware eventually fails. Software eventually works.",author:"Michael Hartung"},
+      {text:"The kernel is not the product. The kernel is the means by which you ship the product.",author:"Linus Torvalds"},
+      {text:"First, solve the problem. Then, write the code.",author:"John Johnson"},
+      {text:"Given enough eyeballs, all bugs are shallow.",author:"Linus Torvalds"},
+      {text:"The network is the computer.",author:"John Gage"},
+      {text:"Every system is perfectly designed to get the results it gets.",author:"W. Edwards Deming"},
+      {text:"The best code is no code at all.",author:"Jeff Atwood"},
+      {text:"A program that produces incorrect results twice as fast is infinitely slower.",author:"John Osterhout"},
+    ];
+    var idx = Math.floor(Math.random() * QQ.length);
+    window.qb = function() {
+      return {
+        q: QQ[idx],
+        init: function() { this.q = QQ[idx]; },
+        next: function() { idx = (idx + 1) % QQ.length; this.q = QQ[idx]; },
+      };
+    };
+  })();
+</script>

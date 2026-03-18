@@ -1,0 +1,46 @@
+---
+---
+
+<nav
+  class="fixed top-0 left-0 right-0 z-50"
+  style="background:var(--bg);border-bottom:1px solid var(--border);"
+>
+  <div class="max-w-5xl mx-auto px-6 sm:px-10 lg:px-16 h-13 flex items-center justify-between" style="height:52px;">
+
+    <a
+      href="/"
+      class="terminal-font text-sm font-medium tracking-tight"
+      style="color:var(--text-strong);"
+    >
+      coveyjorjet<span style="color:var(--accent);">@web</span><span style="color:var(--text);opacity:0.4;">:~$</span>
+    </a>
+
+    <div class="flex items-center gap-6">
+      <a
+        href="https://portfolio.coveyjorjet.com"
+        target="_blank"
+        rel="noopener"
+        class="nav-link terminal-font hidden sm:block"
+      >portfolio ↗</a>
+
+      <!-- Theme toggle -->
+      <button
+        aria-label="Toggle theme"
+        style="cursor:pointer;background:none;border:none;padding:4px;color:var(--text);"
+        class="nav-link flex items-center"
+        onclick="
+          const d = document.documentElement.classList.toggle('dark');
+          localStorage.setItem('theme', d ? 'dark' : 'light');
+        "
+      >
+        <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/>
+        </svg>
+        <svg class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75 9.75 9.75 0 0 1 8.25 6 9.72 9.72 0 0 1 9 2.25c-4.51 1.012-7.5 5.04-7.5 9.75 0 5.385 4.365 9.75 9.75 9.75 4.71 0 8.738-2.99 9.75-7.5Z"/>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+</nav>

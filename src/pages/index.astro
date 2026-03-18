@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import AboutSection from '../components/AboutSection.astro';
+import Terminal from '../components/Terminal.astro';
+import QuoteBar from '../components/QuoteBar.astro';
+import Links from '../components/Links.astro';
+import SectionLabel from '../components/SectionLabel.astro';
+import StatusBadge from '../components/StatusBadge.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base
+  title="coveyjorjet — embedded systems engineer"
+  description="Embedded Systems Engineer. RDK-B, OpenWRT, Linux, networking. Personal hub."
+>
+  <Nav />
+
+  <main>
+    <Hero />
+
+    <!-- Status strip -->
+    <div class="px-6 sm:px-10 lg:px-16 pb-12 max-w-5xl mx-auto flex items-center gap-3">
+      <StatusBadge />
+      <span class="terminal-font text-xs" style="color:var(--text);opacity:0.25;">·</span>
+      <span class="terminal-font text-xs" style="color:var(--text);opacity:0.42;">available for interesting problems</span>
+    </div>
+
+    <SectionLabel label="about" />
+    <AboutSection />
+
+    <SectionLabel label="terminal" />
+    <Terminal />
+
+    <QuoteBar />
+
+    <div class="mt-8">
+      <SectionLabel label="links" />
+      <Links />
+    </div>
+  </main>
+
+  <Footer />
+</Base>

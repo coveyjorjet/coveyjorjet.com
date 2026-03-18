@@ -1,0 +1,441 @@
+---
+// src/components/Terminal.astro
+// The CLI engine lives in is:inline below — Astro will NOT process or move it.
+// window.cliData is set synchronously, so Alpine finds it when it boots.
+---
+
+<section class="px-5 sm:px-8 pb-12 max-w-5xl mx-auto" id="terminal">
+  <div
+    class="terminal-window"
+    x-data="window.cliData()"
+    x-init="boot()"
+    @click="focusInput()"
+    style="cursor:text;"
+  >
+    <!-- Title bar -->
+    <div class="terminal-titlebar" @click.stop>
+      <span class="terminal-dot terminal-dot-red"></span>
+      <span class="terminal-dot terminal-dot-yellow"></span>
+      <span class="terminal-dot terminal-dot-green"></span>
+      <span class="terminal-font ml-3 text-xs" style="color:var(--text);opacity:0.4;">
+        coveyjorjet@web:~ — bash
+      </span>
+      <button
+        class="ml-auto terminal-font text-xs px-2 py-0.5 rounded"
+        style="color:var(--text);opacity:0.3;background:none;border:none;cursor:pointer;"
+        @mouseenter="$el.style.opacity='0.75'"
+        @mouseleave="$el.style.opacity='0.3'"
+        @click.stop="lines = []; addBoot()"
+        aria-label="Clear"
+      >clear</button>
+    </div>
+
+    <!-- Output -->
+    <div
+      class="terminal-body terminal-font"
+      x-ref="termBody"
+      style="height:420px;max-height:65vh;overflow-y:auto;font-size:0.875rem;line-height:1.65;"
+    >
+      <template x-for="(line, i) in lines" :key="i">
+        <div :class="line.cls || ''" style="white-space:pre-wrap;min-height:1.1em;">
+          <template x-if="line.html">
+            <span x-html="line.text"></span>
+          </template>
+          <template x-if="!line.html">
+            <span x-text="line.text"></span>
+          </template>
+        </div>
+      </template>
+
+      <!-- Prompt + input -->
+      <div class="flex items-center gap-2 mt-0.5">
+        <span style="color:var(--prompt);flex-shrink:0;">~$</span>
+        <input
+          x-ref="input"
+          x-model="inp"
+          type="text"
+          class="terminal-font flex-1 outline-none bg-transparent"
+          style="color:var(--text-strong);caret-color:var(--cursor);border:none;font-size:0.875rem;"
+          autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+          aria-label="Terminal input"
+          @keydown.enter="run()"
+          @keydown.up.prevent="navUp()"
+          @keydown.down.prevent="navDown()"
+          @keydown.ctrl.l.prevent="lines = []; addBoot()"
+        />
+      </div>
+    </div>
+
+    <!-- Mobile shortcuts -->
+    <div class="border-t flex flex-wrap gap-2 px-4 py-3 sm:hidden" style="border-color:var(--border);">
+      <template x-for="c in ['help','about','links','now','stack','status']" :key="c">
+        <button
+          class="terminal-font text-xs px-2 py-1 rounded"
+          style="background:var(--bg);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:0.75rem;"
+          @click.stop="inp=c;run();"
+          x-text="c"
+        ></button>
+      </template>
+    </div>
+  </div>
+
+  <p class="terminal-font text-xs mt-2 pl-1 hidden sm:block" style="color:var(--text);opacity:0.28;">
+    ↑↓ history &nbsp;·&nbsp; ctrl+l clear &nbsp;·&nbsp; click anywhere to focus
+  </p>
+</section>
+
+<!-- is:inline — Astro leaves this exactly as-is, runs synchronously in the HTML stream -->
+<script is:inline>
+(function () {
+  // ── helpers ────────────────────────────────────────────
+  var D = '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500';
+  function t(text, cls) { return { text: text, cls: cls || '', html: false }; }
+  function h(text)       { return { text: text, cls: '', html: true };  }
+  function blank()       { return t(''); }
+  function head(s)       { return [t(s, 'term-strong'), t(D, 'term-muted'), blank()]; }
+
+  // ── commands ───────────────────────────────────────────
+  function doHelp() {
+    var cmds = [
+      ['help','List available commands'],
+      ['about','Who is coveyjorjet?'],
+      ['links','Social & profile links'],
+      ['now',"What I'm doing right now"],
+      ['stack','Tools & technologies'],
+      ['contact','How to reach me'],
+      ['status','Current availability'],
+      ['wakatime','Coding activity stats'],
+      ['repo','Open source / GitHub'],
+      ['theme','Toggle theme  (theme dark|light)'],
+      ['clear','Clear the terminal'],
+      ['sudo','...'],
+      ['hack','...'],
+    ];
+    var out = [t('available commands:', 'term-strong'), blank()];
+    cmds.forEach(function(p) {
+      var pad = p[0] + new Array(Math.max(1, 12 - p[0].length) + 1).join(' ');
+      out.push(t('  ' + pad + p[1], (p[0]==='sudo'||p[0]==='hack') ? 'term-muted' : 'term-accent2'));
+    });
+    out.push(blank());
+    out.push(t('\u2191\u2193 history  \u00b7  ctrl+l clear', 'term-muted'));
+    return out;
+  }
+
+  function doAbout() {
+    return head('about coveyjorjet').concat([
+      t('  Embedded Software Engineer', 'term-accent'),
+      blank(),
+      t('  I work at the intersection of hardware and OS,'),
+      t('  building software that runs close to the metal.'),
+      blank(),
+      t('  Focus areas:', 'term-strong'),
+      t('    \u00b7 RDK-B (Reference Design Kit \u2014 Broadband)', 'term-accent2'),
+      t('    \u00b7 OpenWRT \u2014 router firmware & networking', 'term-accent2'),
+      t('    \u00b7 Linux kernel modules & board bring-up', 'term-accent2'),
+      t('    \u00b7 TR-069, CWMP, SNMP protocol stacks', 'term-accent2'),
+      t('    \u00b7 Systems programming: C / C++ / Bash', 'term-accent2'),
+      blank(),
+      t('  Not a portfolio \u2014 just a place to exist online.', 'term-muted'),
+      t('  Work: portfolio.coveyjorjet.com', 'term-muted'),
+      blank(),
+    ]);
+  }
+
+  function doLinks() {
+    return head('links').concat([
+      t('  github      github.com/coveyjorjet', 'term-accent'),
+      t('  linkedin    linkedin.com/in/coveyjorjet', 'term-accent'),
+      t('  email       hey@coveyjorjet.com', 'term-accent'),
+      t('  twitter/x   x.com/coveyjorjet', 'term-accent'),
+      t('  wakatime    wakatime.com/@coveyjorjet', 'term-accent'),
+      t('  facebook    fb.com/coveyjorjet', 'term-accent'),
+      t('  portfolio   portfolio.coveyjorjet.com', 'term-accent2'),
+      blank(),
+      h('  <a href="https://github.com/coveyjorjet" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">\u2192 open github</a>'),
+      blank(),
+    ]);
+  }
+
+  function doNow() {
+    return head('now').concat([
+      t('  current work:', 'term-strong'),
+      t('    Deep in RDK-B middleware & TR-069 stack.'),
+      t('    Debugging CWMP sessions on a custom CPE build.'),
+      blank(),
+      t('  learning:', 'term-strong'),
+      t('    \u00b7 Rust (systems, memory model)', 'term-accent2'),
+      t('    \u00b7 eBPF \u2014 kernel tracing & observability', 'term-accent2'),
+      t('    \u00b7 Yocto Project for custom Linux images', 'term-accent2'),
+      blank(),
+      t('  reading: "CS:APP \u2014 Bryant & O\'Hallaron"', 'term-yellow'),
+      blank(),
+      t('  status: \u2713 open to interesting problems', 'term-green'),
+      t('  last updated: 2025-Q4', 'term-muted'),
+      blank(),
+    ]);
+  }
+
+  function doStack() {
+    return head('stack').concat([
+      t('  systems & embedded:', 'term-accent'),
+      t('    C  C++  Bash  Python  Lua', 'term-strong'),
+      blank(),
+      t('  platforms:', 'term-accent'),
+      t('    Linux  OpenWRT  RDK-B  Yocto  POSIX', 'term-strong'),
+      blank(),
+      t('  networking:', 'term-accent'),
+      t('    TR-069  CWMP  SNMP  DHCP  iptables  tc', 'term-strong'),
+      blank(),
+      t('  tools:', 'term-accent'),
+      t('    GDB  Valgrind  Make  CMake  Git  Docker  QEMU', 'term-strong'),
+      blank(),
+      t('  learning: Rust  eBPF  Zephyr RTOS', 'term-yellow'),
+      blank(),
+    ]);
+  }
+
+  function doContact() {
+    return head('contact').concat([
+      t('  email: hey@coveyjorjet.com', 'term-accent'),
+      blank(),
+      t('  open to:', 'term-strong'),
+      t('    \u00b7 interesting embedded / systems work'),
+      t('    \u00b7 open source collaboration'),
+      t('    \u00b7 technical discussion & mentorship'),
+      blank(),
+      t('  not open to cold recruiter outreach.', 'term-muted'),
+      blank(),
+    ]);
+  }
+
+  function doStatus() {
+    var hr = new Date().getHours();
+    var on = hr >= 7 && hr < 24;
+    return head('status').concat([
+      t(on
+        ? '  \u25cf online  \u2014 probably staring at dmesg output'
+        : '  \u25cb offline \u2014 probably asleep (or debugging a segfault)',
+        on ? 'term-green' : 'term-muted'),
+      blank(),
+      t('  availability: open to conversations', 'term-accent2'),
+      t('  response time: within 48h', 'term-muted'),
+      blank(),
+    ]);
+  }
+
+  function doWakatime() {
+    return head('wakatime').concat([
+      h('  <a href="https://wakatime.com/@coveyjorjet" target="_blank" rel="noopener"><img src="https://wakatime.com/badge/user/coveyjorjet.svg" alt="WakaTime" style="height:20px;vertical-align:middle;border:0;"></a>'),
+      blank(),
+      t('  \u2192 wakatime.com/@coveyjorjet', 'term-accent'),
+      blank(),
+    ]);
+  }
+
+  function doRepo() {
+    return head('repo').concat([
+      t('  github.com/coveyjorjet', 'term-accent'),
+      blank(),
+      t('  most work is proprietary / internal.', 'term-muted'),
+      t('  public: dotfiles, tools, experiments.', 'term-muted'),
+      blank(),
+      h('  <a href="https://github.com/coveyjorjet" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">\u2192 open github</a>'),
+      blank(),
+    ]);
+  }
+
+  function doTheme(args, applyFn) {
+    var arg = args[0];
+    applyFn(arg);
+    if (arg === 'dark')  return [t('  theme \u2192 dark', 'term-accent')];
+    if (arg === 'light') return [t('  theme \u2192 light', 'term-yellow')];
+    return [t('  theme toggled.', 'term-accent2'), t('  usage: theme [dark|light]', 'term-muted')];
+  }
+
+  function doSudo(args) {
+    var s = args.join(' ');
+    if (s.indexOf('rm') !== -1) {
+      return [
+        blank(),
+        t('  \u26a0 nice try.', 'term-red'),
+        t('  [sudo] password for coveyjorjet: ', ''),
+        t('  Sorry, try again.', 'term-muted'),
+        t('  Sorry, try again.', 'term-muted'),
+        t('  sudo: 3 incorrect password attempts.', 'term-red'),
+        blank(),
+      ];
+    }
+    return [
+      blank(),
+      t('  [sudo] password for coveyjorjet: ', ''),
+      blank(),
+      t('  This incident will be reported.', 'term-orange'),
+      t('  (just kidding. there is no sudo here.)', 'term-muted'),
+      blank(),
+    ];
+  }
+
+  function doHack() {
+    return [
+      blank(),
+      t('  initializing breach sequence...', 'term-red'),
+      t('  \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 100%', 'term-red'),
+      blank(),
+      t('  ACCESS GRANTED', 'term-green'),
+      blank(),
+      t('  just kidding. this is a static site.', 'term-muted'),
+      t('  nothing to hack here.', 'term-muted'),
+      blank(),
+      t('  but if you found this \u2014', ''),
+      t("  you're exactly the kind of person I'd work with. \uD83D\uDC7E", 'term-accent2'),
+      blank(),
+    ];
+  }
+
+  function dispatch(cmd, args, applyTheme) {
+    switch(cmd) {
+      case 'help':     return doHelp();
+      case 'about':    return doAbout();
+      case 'links':    return doLinks();
+      case 'now':      return doNow();
+      case 'stack':    return doStack();
+      case 'contact':  return doContact();
+      case 'status':   return doStatus();
+      case 'wakatime': return doWakatime();
+      case 'repo':     return doRepo();
+      case 'theme':    return doTheme(args, applyTheme);
+      case 'sudo':     return doSudo(args);
+      case 'hack':     return doHack();
+      default:
+        return [
+          t('command not found: ' + cmd, 'term-red'),
+          t("type 'help' for available commands.", 'term-muted'),
+        ];
+    }
+  }
+
+  // ── Boot lines ─────────────────────────────────────────
+  var BOOT = [
+    t('\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510', 'term-muted'),
+    t('\u2502  coveyjorjet.com  \u2014  v1.0.0             \u2502', 'term-accent'),
+    t('\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518', 'term-muted'),
+    blank(),
+    t("type 'help' for available commands.", 'term-muted'),
+    blank(),
+  ];
+
+  // ── Alpine data factory — attached to window synchronously ──
+  window.cliData = function() {
+    return {
+      inp: '',
+      lines: [],
+      hist: [],
+      hi: -1,
+
+      boot: function() {
+        this.addBoot();
+        var self = this;
+        self.$nextTick(function() {
+          if (self.$refs.input) self.$refs.input.focus();
+        });
+        // Konami
+        var seq = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+        var ki = 0;
+        var self2 = this;
+        window.addEventListener('keydown', function(e) {
+          ki = (e.key === seq[ki]) ? ki + 1 : (e.key === seq[0] ? 1 : 0);
+          if (ki === seq.length) {
+            ki = 0;
+            self2.push('KONAMI', [
+              t('\u2191\u2191\u2193\u2193\u2190\u2192\u2190\u2192BA \u2014 cheat code accepted.', 'term-yellow'),
+              t('you unlocked: absolutely nothing.', 'term-muted'),
+              t('but respect for knowing the sequence. \uD83C\uDFAE', 'term-accent2'),
+            ]);
+            self2.scrollEnd();
+          }
+        });
+      },
+
+      addBoot: function() {
+        var self = this;
+        BOOT.forEach(function(l) { self.lines.push(l); });
+      },
+
+      applyTheme: function(arg) {
+        if (arg === 'dark') {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+        } else if (arg === 'light') {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('theme', 'light');
+        } else {
+          var d = document.documentElement.classList.toggle('dark');
+          localStorage.setItem('theme', d ? 'dark' : 'light');
+        }
+      },
+
+      run: function() {
+        var raw = this.inp.trim();
+        if (!raw) return;
+        this.hist.unshift(raw);
+        if (this.hist.length > 80) this.hist.pop();
+        this.hi = -1;
+        this.inp = '';
+
+        // Echo the command
+        this.lines.push(t('\u2502 ' + raw, 'term-muted'));
+
+        var parts = raw.split(/\s+/);
+        var cmd = parts[0].toLowerCase();
+        var args = parts.slice(1);
+
+        if (cmd === 'clear') {
+          this.lines = [];
+          this.addBoot();
+          return;
+        }
+
+        var out = dispatch(cmd, args, this.applyTheme.bind(this));
+        var self = this;
+        out.forEach(function(l) { self.lines.push(l); });
+        this.scrollEnd();
+      },
+
+      push: function(label, out) {
+        this.lines.push(t('\u2502 ' + label, 'term-muted'));
+        var self = this;
+        out.forEach(function(l) { self.lines.push(l); });
+      },
+
+      navUp: function() {
+        if (this.hi < this.hist.length - 1) {
+          this.hi++;
+          this.inp = this.hist[this.hi];
+        }
+      },
+
+      navDown: function() {
+        if (this.hi > 0) {
+          this.hi--;
+          this.inp = this.hist[this.hi];
+        } else {
+          this.hi = -1;
+          this.inp = '';
+        }
+      },
+
+      scrollEnd: function() {
+        var self = this;
+        self.$nextTick(function() {
+          var el = self.$refs.termBody;
+          if (el) el.scrollTop = el.scrollHeight;
+        });
+      },
+
+      focusInput: function() {
+        if (this.$refs.input) this.$refs.input.focus();
+      },
+    };
+  };
+})();
+</script>
