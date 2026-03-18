@@ -33,8 +33,9 @@ jobs:
         run: npm ci --prefer-offline
 
       - name: Type check
-        run: npx astro check
-        continue-on-error: true   # non-blocking — warnings shouldn't kill the build
+        if: ${{ !env.ACT }}
+        run: npm run check
+        continue-on-error: true
 
       - name: Build
         run: npm run build
@@ -44,7 +45,7 @@ jobs:
       - name: Verify dist output
         run: |
           if [ ! -f dist/index.html ]; then
-            echo "::error::dist/index.html not found — build may have failed"
+            echo "::error::dist/index.html not found — build failed"
             exit 1
           fi
           echo "dist contents:"
