@@ -49,10 +49,3 @@ jobs:
           fi
           echo "dist contents:"
           ls -lh dist/
-
-      - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-          # Artifact is retained for 1 day — enough for deploy to consume it
-          retention-days: 1
