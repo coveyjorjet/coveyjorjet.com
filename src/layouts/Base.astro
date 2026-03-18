@@ -22,7 +22,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script set:html={themeInitScript} />
+    <script is:inline set:html={themeInitScript} />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="author" content="coveyjorjet" />
@@ -40,7 +40,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
     <!-- Alpine.js CDN — defer, boots after DOM is ready -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+    <script is:inline defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
   </head>
   <body>
     <slot />

@@ -1,7 +1,4 @@
 ---
-// src/components/Terminal.astro
-// The CLI engine lives in is:inline below — Astro will NOT process or move it.
-// window.cliData is set synchronously, so Alpine finds it when it boots.
 ---
 
 <section class="px-5 sm:px-8 pb-12 max-w-5xl mx-auto" id="terminal">
@@ -17,12 +14,12 @@
       <span class="terminal-dot terminal-dot-red"></span>
       <span class="terminal-dot terminal-dot-yellow"></span>
       <span class="terminal-dot terminal-dot-green"></span>
-      <span class="terminal-font ml-3 text-xs" style="color:var(--text);opacity:0.4;">
+      <span class="terminal-font ml-3 text-xs" style="color:var(--text-muted);">
         coveyjorjet@web:~ — bash
       </span>
       <button
         class="ml-auto terminal-font text-xs px-2 py-0.5 rounded"
-        style="color:var(--text);opacity:0.3;background:none;border:none;cursor:pointer;"
+        style="color:var(--text-muted);background:none;border:none;cursor:pointer;"
         @mouseenter="$el.style.opacity='0.75'"
         @mouseleave="$el.style.opacity='0.3'"
         @click.stop="lines = []; addBoot()"
@@ -79,7 +76,7 @@
     </div>
   </div>
 
-  <p class="terminal-font text-xs mt-2 pl-1 hidden sm:block" style="color:var(--text);opacity:0.28;">
+  <p class="terminal-font text-xs mt-2 pl-1 hidden sm:block" style="color:var(--text-muted);">
     ↑↓ history &nbsp;·&nbsp; ctrl+l clear &nbsp;·&nbsp; click anywhere to focus
   </p>
 </section>
@@ -132,7 +129,7 @@
       t('    \u00b7 RDK-B (Reference Design Kit \u2014 Broadband)', 'term-accent2'),
       t('    \u00b7 OpenWRT \u2014 router firmware & networking', 'term-accent2'),
       t('    \u00b7 Linux kernel modules & board bring-up', 'term-accent2'),
-      t('    \u00b7 TR-069, CWMP, SNMP protocol stacks', 'term-accent2'),
+      t('    \u00b7 OneWiFi implementations', 'term-accent2'),
       t('    \u00b7 Systems programming: C / C++ / Bash', 'term-accent2'),
       blank(),
       t('  Not a portfolio \u2014 just a place to exist online.', 'term-muted'),
@@ -145,7 +142,7 @@
     return head('links').concat([
       t('  github      github.com/coveyjorjet', 'term-accent'),
       t('  linkedin    linkedin.com/in/coveyjorjet', 'term-accent'),
-      t('  email       hey@coveyjorjet.com', 'term-accent'),
+      t('  email       coveyjorjet@gmail.com', 'term-accent'),
       t('  twitter/x   x.com/coveyjorjet', 'term-accent'),
       t('  wakatime    wakatime.com/@coveyjorjet', 'term-accent'),
       t('  facebook    fb.com/coveyjorjet', 'term-accent'),
@@ -159,18 +156,18 @@
   function doNow() {
     return head('now').concat([
       t('  current work:', 'term-strong'),
-      t('    Deep in RDK-B middleware & TR-069 stack.'),
-      t('    Debugging CWMP sessions on a custom CPE build.'),
+      t('    OneWiFi integration onto WiFi 8 RDKB device'),
+      t('    Maintaining CI/CD of a small team.'),
       blank(),
       t('  learning:', 'term-strong'),
       t('    \u00b7 Rust (systems, memory model)', 'term-accent2'),
-      t('    \u00b7 eBPF \u2014 kernel tracing & observability', 'term-accent2'),
+      t('    \u00b7 Captive Portals for pisowifi business', 'term-accent2'),
       t('    \u00b7 Yocto Project for custom Linux images', 'term-accent2'),
       blank(),
-      t('  reading: "CS:APP \u2014 Bryant & O\'Hallaron"', 'term-yellow'),
+      t('  reading: "The Rust Book"', 'term-yellow'),
       blank(),
       t('  status: \u2713 open to interesting problems', 'term-green'),
-      t('  last updated: 2025-Q4', 'term-muted'),
+      t('  last updated: 2026-Q1', 'term-muted'),
       blank(),
     ]);
   }
@@ -184,19 +181,19 @@
       t('    Linux  OpenWRT  RDK-B  Yocto  POSIX', 'term-strong'),
       blank(),
       t('  networking:', 'term-accent'),
-      t('    TR-069  CWMP  SNMP  DHCP  iptables  tc', 'term-strong'),
+      t('    DHCP  iptables  tc', 'term-strong'),
       blank(),
       t('  tools:', 'term-accent'),
       t('    GDB  Valgrind  Make  CMake  Git  Docker  QEMU', 'term-strong'),
       blank(),
-      t('  learning: Rust  eBPF  Zephyr RTOS', 'term-yellow'),
+      t('  learning: Rust', 'term-yellow'),
       blank(),
     ]);
   }
 
   function doContact() {
     return head('contact').concat([
-      t('  email: hey@coveyjorjet.com', 'term-accent'),
+      t('  email: coveyjorjet@gmail.com', 'term-accent'),
       blank(),
       t('  open to:', 'term-strong'),
       t('    \u00b7 interesting embedded / systems work'),
@@ -225,7 +222,7 @@
 
   function doWakatime() {
     return head('wakatime').concat([
-      h('  <a href="https://wakatime.com/@coveyjorjet" target="_blank" rel="noopener"><img src="https://wakatime.com/badge/user/coveyjorjet.svg" alt="WakaTime" style="height:20px;vertical-align:middle;border:0;"></a>'),
+      h('  <a href="https://wakatime.com/@coveyjorjet" target="_blank" rel="noopener"><img src="https://wakatime.com/badge/user/c3e45894-17b0-412b-969d-8f4e4efc265e.svg" alt="WakaTime" style="height:20px;vertical-align:middle;border:0;"></a>'),
       blank(),
       t('  \u2192 wakatime.com/@coveyjorjet', 'term-accent'),
       blank(),

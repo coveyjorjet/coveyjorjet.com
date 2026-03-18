@@ -6,6 +6,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "check": "astro check",
     "astro": "astro"
   },
   "dependencies": {
@@ -16,6 +17,8 @@
   "devDependencies": {
     "tailwindcss": "^3.4.10",
     "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.45"
+    "postcss": "^8.4.45",
+    "@astrojs/check": "^0.9.0",
+    "typescript": "^5.5.0"
   }
 }

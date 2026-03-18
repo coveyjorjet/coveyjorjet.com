@@ -6,34 +6,34 @@
 
     <div
       class="terminal-font text-sm mb-6"
-      style="color:var(--text);opacity:0.35;"
+      style="color:var(--text-muted);"
     >coveyjorjet@web:~$</div>
 
     <h1
       class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight mb-3"
       style="color:var(--text-strong);letter-spacing:-0.03em;"
     >
-      Covey Jorjet
+      Covey Jorjet De Luna
     </h1>
 
     <div
       class="terminal-font text-lg sm:text-xl mb-8"
       style="color:var(--accent2);min-height:1.75em;"
       id="hero-role"
-      aria-label="embedded_systems_engineer"
+      aria-label="embedded_software_engineer"
     ></div>
 
     <p
       class="text-base sm:text-lg leading-relaxed mb-10 max-w-xl"
       style="color:var(--text);font-weight:400;"
     >
-      Embedded software engineer focused on RDK&#8209;B, OpenWRT, and Linux systems.
+      Embedded software engineer focused on RDKB, OpenWRT, and Linux systems.
       I build software that runs close to the metal — not a portfolio,
       just a place to exist online.
     </p>
 
     <div class="flex flex-wrap gap-2">
-      {['RDK-B', 'OpenWRT', 'Linux kernel', 'C / C++', 'TR-069', 'CWMP'].map((tag) => (
+      {['RDK-B', 'OpenWRT', 'Linux kernel', 'C / C++', 'OneWiFi'].map((tag) => (
         <span
           class="terminal-font text-xs px-3 py-1.5 rounded-full"
           style="background:var(--bg-alt);border:1px solid var(--border);color:var(--text-em);letter-spacing:0.01em;"
@@ -50,7 +50,7 @@
   (function() {
     var el = document.getElementById('hero-role');
     if (!el) return;
-    var text = 'embedded_systems_engineer';
+    var text = 'embedded_software_engineer';
     var i = 0;
     el.innerHTML = '<span id="hr-t"></span><span id="hr-c" style="color:var(--cursor);animation:blink 1.1s step-end infinite;">\u2588</span>';
     var te = document.getElementById('hr-t');

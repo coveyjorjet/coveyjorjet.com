@@ -5,7 +5,7 @@
   <div class="grid sm:grid-cols-2 gap-10 lg:gap-16">
 
     <div>
-      <h2 class="text-xs terminal-font tracking-widest uppercase mb-5" style="color:var(--text);opacity:0.4;">
+      <h2 class="text-xs terminal-font tracking-widest uppercase mb-5" style="color:var(--text-muted);">
         about
       </h2>
       <p class="text-base leading-relaxed mb-4" style="color:var(--text-em);">
@@ -13,7 +13,7 @@
         and network protocol stacks. Most of my work lives in C, Bash, and Linux userspace —
         on platforms like RDK-B and OpenWRT.
       </p>
-      <p class="text-base leading-relaxed" style="color:var(--text);opacity:0.7;">
+      <p class="text-base leading-relaxed" style="color:var(--text-muted);">
         This site is a personal hub, not a portfolio. For work samples visit
         <a href="https://portfolio.coveyjorjet.com" target="_blank" rel="noopener" style="color:var(--accent);">
           portfolio.coveyjorjet.com
@@ -22,20 +22,20 @@
     </div>
 
     <div>
-      <h2 class="text-xs terminal-font tracking-widest uppercase mb-5" style="color:var(--text);opacity:0.4;">
+      <h2 class="text-xs terminal-font tracking-widest uppercase mb-5" style="color:var(--text-muted);">
         now
       </h2>
       <ul class="space-y-3">
         {[
-          { label: 'working on', value: 'RDK-B middleware & TR-069 CWMP stack' },
-          { label: 'learning',   value: 'Rust, eBPF, Yocto Project' },
-          { label: 'reading',    value: "CS:APP — Bryant & O'Hallaron" },
+          { label: 'working on', value: 'OneWiFi integration onto WiFi 8 RDKB device' },
+          { label: 'learning',   value: 'Rust, Captive-Portal, Yocto Project' },
+          { label: 'reading',    value: "The Rust Book" },
           { label: 'status',     value: 'open to interesting problems' },
         ].map(({ label, value }) => (
           <li class="flex gap-4 text-sm sm:text-base">
             <span
               class="terminal-font flex-shrink-0 w-24 pt-0.5 text-xs"
-              style="color:var(--text);opacity:0.38;letter-spacing:0.02em;"
+              style="color:var(--text-muted);letter-spacing:0.02em;"
             >{label}</span>
             <span style="color:var(--text-em);">{value}</span>
           </li>

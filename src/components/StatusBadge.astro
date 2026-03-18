@@ -2,5 +2,5 @@
 ---
 <div class="inline-flex items-center gap-2 terminal-font text-xs" x-data="{label:'online'}" x-init="label=(new Date().getHours()>=7&&new Date().getHours()<24)?'online':'probably asleep'">
   <span class="status-dot" aria-hidden="true"></span>
-  <span style="color:var(--text);opacity:0.55;" x-text="label"></span>
+  <span style="color:var(--text-muted);" x-text="label"></span>
 </div>

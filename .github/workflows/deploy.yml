@@ -1,55 +1,64 @@
-name: Deploy to GitHub Pages
+name: Deploy
 
 on:
-  push:
+  # Only run after the Build workflow completes successfully on main
+  workflow_run:
+    workflows: [Build]
     branches: [main]
+    types: [completed]
+  # Allow manual deploys from the Actions tab
   workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Build workflow run ID to deploy (leave blank to use latest)"
+        required: false
+        type: string
 
 permissions:
-  contents: read
   pages: write
   id-token: write
+  actions: read      # needed to download the artifact from the build run
 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: deploy-production
+  cancel-in-progress: false   # never cancel an in-flight deploy
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build with Astro
-        run: npm run build
-
-      - name: Copy .nojekyll to dist
-        run: cp public/.nojekyll dist/.nojekyll
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
   deploy:
-    name: Deploy
-    needs: build
+    name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
+
+    # Gate: only deploy if the triggering build run succeeded.
+    # For manual dispatch we skip this check.
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deploy.outputs.page_url }}
+
     steps:
+      - name: Resolve build run ID
+        id: run
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.run_id }}" ]; then
+            echo "id=${{ inputs.run_id }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "id=${{ github.event.workflow_run.id }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Download artifact from build run
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          run-id: ${{ steps.run.outputs.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifact
+
+      # upload-pages-artifact wraps dist into a tar — we pass the extracted dir
       - name: Deploy to GitHub Pages
-        id: deployment
+        id: deploy
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
