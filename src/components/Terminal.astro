@@ -1,7 +1,7 @@
 ---
 ---
 
-<section class="px-5 sm:px-8 pb-12 max-w-5xl mx-auto" id="terminal">
+<section class="px-4 sm:px-8 pb-12 max-w-5xl mx-auto" id="terminal">
   <div
     class="terminal-window"
     x-data="window.cliData()"
@@ -31,7 +31,7 @@
     <div
       class="terminal-body terminal-font"
       x-ref="termBody"
-      style="height:420px;max-height:65vh;overflow-y:auto;font-size:0.875rem;line-height:1.65;"
+      style="height:340px;max-height:55vh;overflow-y:auto;font-size:0.8rem;line-height:1.65;"
     >
       <template x-for="(line, i) in lines" :key="i">
         <div :class="line.cls || ''" style="white-space:pre-wrap;min-height:1.1em;">
