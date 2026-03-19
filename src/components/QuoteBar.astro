@@ -1,14 +1,14 @@
 ---
 ---
 
-<aside class="px-6 sm:px-10 lg:px-16 py-5 max-w-5xl mx-auto" x-data="qb()" x-init="init()">
+<aside class="px-4 sm:px-10 lg:px-16 py-5 max-w-5xl mx-auto" x-data="qb()" x-init="init()">
   <div
-    class="flex items-start gap-4 px-6 py-5 rounded-lg"
+    class="flex items-start gap-3 sm:gap-4 px-4 sm:px-6 py-4 sm:py-5 rounded-lg"
     style="background:var(--bg-alt);border:1px solid var(--border);"
   >
-    <span class="terminal-font text-2xl flex-shrink-0 leading-none select-none" style="color:var(--accent);opacity:0.5;">"</span>
-    <div class="flex-1 min-w-0">
-      <p class="terminal-font text-sm leading-relaxed italic" style="color:var(--text-em);" x-text="q.text"></p>
+    <span class="terminal-font text-xl sm:text-2xl flex-shrink-0 leading-none select-none" style="color:var(--accent);opacity:0.5;">"</span>
+    <div class="flex-1 min-w-0 overflow-hidden">
+      <p class="terminal-font text-xs sm:text-sm leading-relaxed italic break-words" style="color:var(--text-em);" x-text="q.text"></p>
       <p class="terminal-font text-xs mt-1.5" style="color:var(--text-muted);">— <span x-text="q.author"></span></p>
     </div>
     <button

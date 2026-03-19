@@ -169,3 +169,38 @@ a:hover { color: var(--accent2); }
   transition: color 0.15s;
 }
 .nav-link:hover { color: var(--text-strong); }
+
+/* ── Mobile: prevent horizontal overflow ───────────────────── */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* ── Mobile: terminal responsive font size ─────────────────── */
+@media (max-width: 479px) {
+  .terminal-body {
+    padding: 12px 14px 10px;
+    font-size: 0.75rem !important;
+  }
+  .terminal-titlebar {
+    padding: 9px 12px;
+  }
+}
+
+/* ── Mobile: minimum tap target size ───────────────────────── */
+@media (max-width: 639px) {
+  button, a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  /* Restore display for inline/span-like links */
+  p a, li a {
+    display: inline;
+    min-height: unset;
+  }
+  /* Terminal shortcut buttons */
+  .terminal-body input {
+    font-size: 0.8rem !important;
+  }
+}

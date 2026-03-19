@@ -3,6 +3,14 @@ export default {
   content: ['./src/**/*.{astro,html,js,ts}'],
   darkMode: 'class',
   theme: {
+    screens: {
+      'xs': '480px',
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1536px',
+    },
     extend: {
       maxWidth: {
         '5xl': '68rem',  // 1088px — comfortable on large screens
