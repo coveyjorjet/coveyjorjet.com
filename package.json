@@ -7,7 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "deploy": "astro build && npx wrangler pages deploy dist --project-name=coveyjorjet-com",
+    "deploy": "astro build && npx wrangler deploy --assets=./dist --compatibility-date 2026-03-18 --project-name=coveyjorjet-home",
     "astro": "astro"
   },
   "dependencies": {
